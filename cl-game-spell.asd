@@ -4,6 +4,8 @@
   :license "MIT License"
   :version "0.0.1"
   :serial t
+  :depends-on (#:cl-raylib)
   :components ((:file "package")
                (:file "util")
-               (:file "main")))
+               (:file "main")
+               (:file "raylib")))

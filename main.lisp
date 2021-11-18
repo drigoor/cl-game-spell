@@ -1,9 +1,23 @@
-(in-package #:game-spell)
+(in-package #:cl-game-spell)
+
+
+(defparameter *current-scene* nil)
+
+
+(defmacro with-scene (scene &body body)
+  `(let ((*current-scene* ,scene))
+     ,@body))
 
 
 (define-class scene ()
   actables
   drawables)
+
+
+(defmacro define-scene (name)
+  `(progn
+     (define-class ,name (scene))
+     (define-constructor ,name)))
 
 
 (defgeneric init (scene))
@@ -72,15 +86,3 @@
     (mapc #'draw drawables)))
 
 
-(defparameter *current-scene* nil)
-
-
-(defmacro with-scene (scene &body body)
-  `(let ((*current-scene* ,scene))
-     ,@body))
-
-
-(defmacro define-scene (name)
-  `(progn
-     (define-class ,name (scene))
-     (define-constructor ,name)))

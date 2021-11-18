@@ -1,10 +1,10 @@
-(in-package #:game-spell)
+(in-package #:cl-game-spell)
 
 
 (defmacro define-class (class-name superclasses-names &rest slots-names)
   (let ((slots (mapcar #'(lambda (slot-name)
                            (list slot-name
-                                 :initarg (intern (string slot-name) :keyword)
+                                 :initarg (intern (string slot-name) :keyword) ; from alexandria `make-keyword'
                                  :initform nil))
                        slots-names)))
     `(defclass ,class-name ,superclasses-names
@@ -16,3 +16,10 @@
         (name (intern (format nil "MAKE-~a" class))))
     `(defun ,name (&rest args)
        (apply #'make-instance ',class args))))
+
+
+(defun random-between (start end)
+  (+ start (random (+ 1 (- end start)))))
+
+
+(defconstant +pi+ (coerce pi 'single-float))
