@@ -7,5 +7,6 @@
   :depends-on (#:cl-raylib)
   :components ((:file "package")
                (:file "util")
+               (:file "math")
                (:file "main")
                (:file "raylib")))

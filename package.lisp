@@ -9,8 +9,20 @@
   ;; util
   (:export #:define-class
            #:define-constructor
-           #:random-between
-           #:+pi+)
+           #:random-between)
+
+  ;; math
+  (:export #:+pi+
+           #:+2pi+
+           #:v2
+           #:v2-x
+           #:v2-y
+           #:v2-add
+           #:v2-scale
+           #:v2-rotate
+           #:<-v2
+           #:v2-wrap
+           #:keep-angle-in-range)
 
   ;; main
   (:export #:with-scene
@@ -24,11 +36,4 @@
            #:drawable)
 
   ;; raylib
-  (:export #:run-scene
-           #:v2
-           #:v2-x
-           #:v2-y
-           #:v2-add
-           #:v2-scale
-           #:v2-rotate
-           #:<-v2))
+  (:export #:run-scene))

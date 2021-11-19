@@ -20,6 +20,3 @@
 
 (defun random-between (start end)
   (+ start (random (+ 1 (- end start)))))
-
-
-(defconstant +pi+ (coerce pi 'single-float))
