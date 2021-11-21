@@ -32,6 +32,7 @@
            #:uninit
            #:act
            #:draw
+           #:frag
            #:actable
            #:drawable)
 

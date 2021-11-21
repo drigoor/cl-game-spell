@@ -10,6 +10,7 @@
         (when (window-should-close)     ; dectect window close button or ESC key
           (uninit scene)
           (return))
-        (act scene)
+        (clear-fragged scene)
         (with-drawing
-          (draw scene))))))
+          (draw scene))
+        (act scene)))))

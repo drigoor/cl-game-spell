@@ -1,63 +1,22 @@
 (in-package #:cl-game-spell)
 
 
-(defparameter *current-scene* nil)
+(defgeneric act (this))
 
 
-(defmacro with-scene (scene &body body)
-  `(let ((*current-scene* ,scene))
-     ,@body))
+(defgeneric draw (this))
 
 
 (define-class scene ()
   actables
-  drawables)
+  drawables
+  fragged)
 
 
 (defmacro define-scene (name)
   `(progn
      (define-class ,name (scene))
      (define-constructor ,name)))
-
-
-(defgeneric init (scene))
-
-
-(defgeneric uninit (scene))
-
-
-(defgeneric act (scene))
-
-
-(defgeneric draw (scene))
-
-
-(define-class actable ()
-  frame-counter
-  frame-counter-to-act)
-
-
-(defmethod initialize-instance :before ((this actable) &key)
-  (with-slots (frame-counter frame-counter-to-act) this
-    (setf frame-counter 0)
-    (setf frame-counter-to-act 60)))
-
-
-(defmethod initialize-instance :after ((this actable) &key)
-  (with-slots (actables) *current-scene*
-    (push this actables)))
-
-
-(defgeneric act (scene)
-  (:documentation "Executes act method if frame-counter is above frame-counter-to-act (it should return t to reset the frame-counter)."))
-
-
-(define-class drawable ())
-
-
-(defmethod initialize-instance :after ((this drawable) &key)
-  (with-slots (drawables) *current-scene*
-    (push this drawables)))
 
 
 (defmethod init ((this scene)))
@@ -86,3 +45,50 @@
     (mapc #'draw drawables)))
 
 
+(defmethod frag (object)
+  (with-slots (fragged) *current-scene*
+    (push object fragged)))
+
+
+(defun clear-fragged (scene)
+  (with-slots (fragged) scene
+    (mapc #'destroy fragged)
+    (setf fragged nil)))
+
+
+(defparameter *current-scene* nil)
+
+
+(defmacro with-scene (scene &body body)
+  `(let ((*current-scene* ,scene))
+     ,@body))
+
+
+(define-class actable ())
+
+
+(defmethod initialize-instance :after ((this actable) &key)
+  (with-slots (actables) *current-scene*
+    (push this actables)))
+
+
+(defmethod destroy ((this actable))
+  (with-slots (actables) *current-scene*
+    (setf actables (remove this actables)))
+  (when (next-method-p)
+    (call-next-method)))
+
+
+(define-class drawable ())
+
+
+(defmethod initialize-instance :after ((this drawable) &key)
+  (with-slots (drawables) *current-scene*
+    (push this drawables)))
+
+
+(defmethod destroy ((this drawable))
+  (with-slots (drawables) *current-scene*
+    (setf drawables (remove this drawables)))
+  (when (next-method-p)
+    (call-next-method)))
