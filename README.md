@@ -1,3 +1,6 @@
+* the idea in this repo was to create a simple base for several games (the first was an [asteroids clone](https://github.com/drigoor/cl-asteroids))
+
+
 # cl-game-spell
 Common Lisp Game Spell
 
