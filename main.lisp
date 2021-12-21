@@ -64,7 +64,30 @@
      ,@body))
 
 
-(define-class actable ())
+(define-class actable ()
+  ;; frame-counter
+  ;; frame-counter-to-act
+  )
+
+
+;; (defmethod initialize-instance :before ((this actable) &key)
+;;   (with-slots (frame-counter frame-counter-to-act) this
+;;     (setf frame-counter 0)
+;;     (setf frame-counter-to-act 60)))
+
+
+;; (defmethod act :around ((this actable) &optional ignored)
+;;   (declare (ignore ignored))
+;;   (with-slots (frame-counter frame-counter-to-act) this
+;;     (when (and (>= frame-counter frame-counter-to-act) ; can act?
+;;                (next-method-p))
+;;       (when (call-next-method)
+;;         (setf frame-counter 0)))
+;;     (incf frame-counter)))
+;;
+;;
+;; (defgeneric act (actable)
+;;   (:documentation "Executes act method if frame-counter is above frame-counter-to-act (it should return t to reset the frame-counter)."))
 
 
 (defmethod initialize-instance :after ((this actable) &key)
