@@ -4,7 +4,9 @@
   :license "MIT License"
   :version "0.0.1"
   :serial t
-  :depends-on (#:cl-raylib)
+  :depends-on (#:cl-raylib
+               #:3d-vectors
+               #:3d-matrices)
   :components ((:file "package")
                (:file "util")
                (:file "math")

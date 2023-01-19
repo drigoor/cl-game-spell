@@ -9,17 +9,17 @@
 
 (declaim (inline v2))
 (defun v2 (x y)
-  (make-vector2 :x (coerce x 'single-float) :y (coerce y 'single-float)))
+  (vec (coerce x 'single-float) (coerce y 'single-float)))
 
 
 (declaim (inline v2-x))
 (defun v2-x (v)
-  (vector2-x v))
+  (vx v))
 
 
 (declaim (inline v2-y))
 (defun v2-y (v)
-  (vector2-y v))
+  (vy v))
 
 
 (defun v2-add (v1 v2)

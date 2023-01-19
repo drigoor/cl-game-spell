@@ -4,7 +4,8 @@
 (defpackage #:cl-game-spell
   (:nicknames #:game-spell)
   (:use #:cl
-        #:cl-raylib)
+        #:cl-raylib
+        #:3d-vectors)
 
   ;; util
   (:export #:define-class
