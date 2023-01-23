@@ -16,7 +16,3 @@
         (name (intern (format nil "MAKE-~a" class))))
     `(defun ,name (&rest args)
        (apply #'make-instance ',class args))))
-
-
-(defun random-between (start end)
-  (+ start (random (+ 1 (- end start)))))

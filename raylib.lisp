@@ -7,10 +7,10 @@
     (with-scene scene
       (init scene)
       (loop
-        (when (window-should-close)     ; dectect window close button or ESC key
-          (uninit scene)
+        (when (window-should-close) ; dectect window close button or ESC key
+          (destroy scene)
           (return))
         (clear-fragged scene)
+        (update scene)
         (with-drawing
-          (draw scene))
-        (act scene)))))
+          (draw scene))))))

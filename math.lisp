@@ -73,3 +73,7 @@
     (loop while (> angle +2pi+)
           do (decf angle +2pi+))
     angle))
+
+
+(defun random-between (start end)
+  (+ start (random (+ 1 (- end start)))))

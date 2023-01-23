@@ -1,41 +1,51 @@
 (in-package #:cl-game-spell)
 
 
-(defgeneric act (this))
+;; -------------------------------------
 
 
-(defgeneric draw (this))
+(defmacro define-game-object (name superclasses-names &rest slot-names)
+  `(progn
+     (define-class ,name ,superclasses-names ,@slot-names)
+     (define-constructor ,name)))
 
 
-(define-class scene ()
-  actables
+;; -------------------------------------
+
+
+(define-class updateable ())
+(define-class drawable ())
+(define-class fragable ())
+
+(defgeneric update (updateable))
+(defgeneric draw (drawable))
+(defgeneric frag (fragable))
+
+(defgeneric destroy (fragable))
+
+
+;; -------------------------------------
+
+
+(define-game-object scene ()
+  updateables
   drawables
   fragged)
 
 
-(defmacro define-scene (name)
-  `(progn
-     (define-class ,name (scene))
-     (define-constructor ,name)))
-
-
 (defmethod init ((this scene)))
-
-
-(defmethod uninit ((this scene)))
-
-
-(defmethod act ((this scene)))
-
-
+(defmethod destroy ((this scene)))
+(defmethod update ((this scene)))
 (defmethod draw ((this scene)))
+(defmethod frag ((this scene))
+  (error "These Are Not the Droids You Are Looking For"))
 
 
-(defmethod act :around ((this scene))
+(defmethod update :around ((this scene))
   (when (next-method-p)
     (call-next-method))
-  (with-slots (actables) this
-    (mapc #'act actables)))
+  (with-slots (updateables) this
+    (mapc #'update updateables)))
 
 
 (defmethod draw :around ((this scene))
@@ -45,15 +55,13 @@
     (mapc #'draw drawables)))
 
 
-(defmethod frag (object)
-  (with-slots (fragged) *current-scene*
-    (push object fragged)))
-
-
 (defun clear-fragged (scene)
   (with-slots (fragged) scene
     (mapc #'destroy fragged)
     (setf fragged nil)))
+
+
+;; -------------------------------------
 
 
 (defparameter *current-scene* nil)
@@ -64,45 +72,26 @@
      ,@body))
 
 
-(define-class actable ()
-  ;; frame-counter
-  ;; frame-counter-to-act
-  )
-
-
-;; (defmethod initialize-instance :before ((this actable) &key)
-;;   (with-slots (frame-counter frame-counter-to-act) this
-;;     (setf frame-counter 0)
-;;     (setf frame-counter-to-act 60)))
-
-
-;; (defmethod act :around ((this actable) &optional ignored)
-;;   (declare (ignore ignored))
-;;   (with-slots (frame-counter frame-counter-to-act) this
-;;     (when (and (>= frame-counter frame-counter-to-act) ; can act?
-;;                (next-method-p))
-;;       (when (call-next-method)
-;;         (setf frame-counter 0)))
-;;     (incf frame-counter)))
-;;
-;;
-;; (defgeneric act (actable)
-;;   (:documentation "Executes act method if frame-counter is above frame-counter-to-act (it should return t to reset the frame-counter)."))
-
-
-(defmethod initialize-instance :after ((this actable) &key)
-  (with-slots (actables) *current-scene*
-    (push this actables)))
-
-
-(defmethod destroy ((this actable))
-  (with-slots (actables) *current-scene*
-    (setf actables (remove this actables)))
+(defmethod destroy :around ((this updateable))
   (when (next-method-p)
-    (call-next-method)))
+    (call-next-method))
+  (with-slots (updateables) *current-scene*
+    (setf updateables (remove this updateables))))
 
 
-(define-class drawable ())
+(defmethod destroy :around ((this drawable))
+  (when (next-method-p)
+    (call-next-method))
+  (with-slots (drawables) *current-scene*
+    (setf drawables (remove this drawables))))
+
+
+;; -------------------------------------
+
+
+(defmethod initialize-instance :after ((this updateable) &key)
+  (with-slots (updateables) *current-scene*
+    (push this updateables)))
 
 
 (defmethod initialize-instance :after ((this drawable) &key)
@@ -110,8 +99,26 @@
     (push this drawables)))
 
 
-(defmethod destroy ((this drawable))
-  (with-slots (drawables) *current-scene*
-    (setf drawables (remove this drawables)))
-  (when (next-method-p)
-    (call-next-method)))
+(defmethod frag ((this fragable))
+  (with-slots (fragged) *current-scene*
+    (push this fragged)))
+
+
+;; (defmethod initialize-instance :before ((this updateable) &key)
+;;   (with-slots (frame-counter frame-counter-to-update) this
+;;     (setf frame-counter 0)
+;;     (setf frame-counter-to-update 60)))
+;;
+;;
+;; (defmethod update :around ((this updateable) &optional ignored)
+;;   (declare (ignore ignored))
+;;   (with-slots (frame-counter frame-counter-to-update) this
+;;     (when (and (>= frame-counter frame-counter-to-update) ; can update?
+;;                (next-method-p))
+;;       (when (call-next-method)
+;;         (setf frame-counter 0)))
+;;     (incf frame-counter)))
+;;
+;;
+;; (defgeneric update (updateable)
+;;   (:documentation "Executes update method if frame-counter is above frame-counter-to-update (it should return t to reset the frame-counter)."))

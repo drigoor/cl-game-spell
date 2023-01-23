@@ -9,8 +9,7 @@
 
   ;; util
   (:export #:define-class
-           #:define-constructor
-           #:random-between)
+           #:define-constructor)
 
   ;; math
   (:export #:+pi+
@@ -23,19 +22,23 @@
            #:v2-rotate
            #:<-v2
            #:v2-wrap
-           #:keep-angle-in-range)
+           #:keep-angle-in-range
+           #:random-between)
 
   ;; main
-  (:export #:with-scene
-           #:scene
+  (:export #:define-game-object
            #:define-scene
-           #:init
-           #:uninit
-           #:act
+           #:destroy
+           #:destroy
            #:draw
+           #:drawable
            #:frag
-           #:actable
-           #:drawable)
+           #:fragable
+           #:init
+           #:make-scene
+           #:scene
+           #:update
+           #:updateable)
 
   ;; raylib
   (:export #:run-scene))
